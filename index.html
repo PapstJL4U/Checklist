@@ -5174,6 +5174,8 @@ var $elm$core$Task$perform = F2(
 	});
 var $elm$browser$Browser$element = _Browser_element;
 var $author$project$Models$Change = {$: 'Change'};
+var $author$project$Models$Csharp = {$: 'Csharp'};
+var $author$project$Models$Oracle = {$: 'Oracle'};
 var $author$project$Models$change = {
 	context: $author$project$Models$Change,
 	display: 'Change-Script',
@@ -5183,7 +5185,6 @@ var $author$project$Models$change = {
 			{checked: true, id: 6, text: 'second'}
 		])
 };
-var $author$project$Models$Csharp = {$: 'Csharp'};
 var $elm$core$Basics$negate = function (n) {
 	return -n;
 };
@@ -5214,7 +5215,7 @@ var $elm$core$List$tail = function (list) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
-var $author$project$Main$init2 = F2(
+var $author$project$Main$init_enum = F2(
 	function (start, list) {
 		var _v0 = _Utils_Tuple2(
 			$elm$core$List$head(list),
@@ -5228,7 +5229,7 @@ var $author$project$Main$init2 = F2(
 					_Utils_update(
 						hd,
 						{id: start}),
-					A2($author$project$Main$init2, start + 1, tlist));
+					A2($author$project$Main$init_enum, start + 1, tlist));
 			} else {
 				var hd = _v0.a.a;
 				return _List_fromArray(
@@ -5242,7 +5243,6 @@ var $author$project$Main$init2 = F2(
 			return list;
 		}
 	});
-var $author$project$Models$Oracle = {$: 'Oracle'};
 var $author$project$Models$oracle = {
 	context: $author$project$Models$Oracle,
 	display: 'Oracle',
@@ -5252,35 +5252,32 @@ var $author$project$Models$oracle = {
 			{checked: true, id: 4, text: 'second'}
 		])
 };
-var $author$project$Main$init_ids = function (model) {
-	var orc = $elm$core$List$length(model.oracle.items);
-	var cs = $elm$core$List$length(model.csharp.items);
-	return _Utils_update(
-		model,
-		{
-			change: _Utils_update(
-				$author$project$Models$change,
-				{
-					items: A2($author$project$Main$init2, cs + orc, $author$project$Models$change.items)
-				}),
-			csharp: _Utils_update(
-				$author$project$Models$csharp,
-				{
-					items: A2($author$project$Main$init2, 0, $author$project$Models$csharp.items)
-				}),
-			oracle: _Utils_update(
-				$author$project$Models$oracle,
-				{
-					items: A2($author$project$Main$init2, cs, $author$project$Models$oracle.items)
-				})
-		});
-};
-var $author$project$Main$mytabs = $author$project$Main$init_ids(
-	{change: $author$project$Models$change, csharp: $author$project$Models$csharp, oracle: $author$project$Models$oracle, uid: 0});
+var $author$project$Main$mytabs = {change: $author$project$Models$change, csharp: $author$project$Models$csharp, oracle: $author$project$Models$oracle, uid: 0};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$Main$init = function (_v0) {
-	return _Utils_Tuple2($author$project$Main$mytabs, $elm$core$Platform$Cmd$none);
+var $author$project$Main$init_ids = function (_v0) {
+	var orc = $elm$core$List$length($author$project$Main$mytabs.oracle.items);
+	var cs = $elm$core$List$length($author$project$Main$mytabs.csharp.items);
+	return _Utils_Tuple2(
+		{
+			change: {
+				context: $author$project$Models$Change,
+				display: 'Change',
+				items: A2($author$project$Main$init_enum, cs + orc, $author$project$Models$change.items)
+			},
+			csharp: {
+				context: $author$project$Models$Csharp,
+				display: 'Hello',
+				items: A2($author$project$Main$init_enum, 0, $author$project$Models$csharp.items)
+			},
+			oracle: {
+				context: $author$project$Models$Oracle,
+				display: 'Oracle',
+				items: A2($author$project$Main$init_enum, cs, $author$project$Models$oracle.items)
+			},
+			uid: 1
+		},
+		$elm$core$Platform$Cmd$none);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
@@ -5304,17 +5301,17 @@ var $author$project$Main$update = F2(
 						change: _Utils_update(
 							$author$project$Models$change,
 							{
-								items: A2($elm$core$List$map, updateEntry, $author$project$Models$change.items)
+								items: A2($elm$core$List$map, updateEntry, model.change.items)
 							}),
 						csharp: _Utils_update(
 							$author$project$Models$csharp,
 							{
-								items: A2($elm$core$List$map, updateEntry, $author$project$Models$csharp.items)
+								items: A2($elm$core$List$map, updateEntry, model.csharp.items)
 							}),
 						oracle: _Utils_update(
 							$author$project$Models$oracle,
 							{
-								items: A2($elm$core$List$map, updateEntry, $author$project$Models$oracle.items)
+								items: A2($elm$core$List$map, updateEntry, model.oracle.items)
 							})
 					}),
 				$elm$core$Platform$Cmd$none);
@@ -5322,6 +5319,15 @@ var $author$project$Main$update = F2(
 			return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
 	});
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$align = $elm$html$Html$Attributes$stringProperty('align');
 var $elm$json$Json$Encode$bool = _Json_wrap;
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
@@ -5341,6 +5347,7 @@ var $author$project$Main$CheckBox = F2(
 var $elm$core$String$concat = function (strings) {
 	return A2($elm$core$String$join, '', strings);
 };
+var $elm$html$Html$li = _VirtualDom_node('li');
 var $elm$core$Basics$not = _Basics_not;
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
@@ -5362,19 +5369,10 @@ var $elm$html$Html$Events$onClick = function (msg) {
 var $elm$html$Html$span = _VirtualDom_node('span');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
-var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$Main$itemToTD = function (checkListItem) {
 	return A2(
-		$elm$html$Html$ul,
+		$elm$html$Html$li,
 		_List_Nil,
 		_List_fromArray(
 			[
@@ -5444,6 +5442,8 @@ var $author$project$Main$itemsAllChecked = function (checkList) {
 		},
 		checkList);
 };
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$html$Html$table = _VirtualDom_node('table');
 var $elm$html$Html$tbody = _VirtualDom_node('tbody');
 var $elm$html$Html$td = _VirtualDom_node('td');
@@ -5451,6 +5451,7 @@ var $elm$html$Html$tfoot = _VirtualDom_node('tfoot');
 var $elm$html$Html$th = _VirtualDom_node('th');
 var $elm$html$Html$thead = _VirtualDom_node('thead');
 var $elm$html$Html$tr = _VirtualDom_node('tr');
+var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$Main$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -5502,15 +5503,42 @@ var $author$project$Main$view = function (model) {
 										A2(
 										$elm$html$Html$td,
 										_List_Nil,
-										A2($elm$core$List$map, $author$project$Main$itemToTD, model.csharp.items)),
+										_List_fromArray(
+											[
+												A2(
+												$elm$html$Html$ul,
+												_List_fromArray(
+													[
+														A2($elm$html$Html$Attributes$style, 'list-style-type', 'none')
+													]),
+												A2($elm$core$List$map, $author$project$Main$itemToTD, model.csharp.items))
+											])),
 										A2(
 										$elm$html$Html$td,
 										_List_Nil,
-										A2($elm$core$List$map, $author$project$Main$itemToTD, model.oracle.items)),
+										_List_fromArray(
+											[
+												A2(
+												$elm$html$Html$ul,
+												_List_fromArray(
+													[
+														A2($elm$html$Html$Attributes$style, 'list-style-type', 'none')
+													]),
+												A2($elm$core$List$map, $author$project$Main$itemToTD, model.oracle.items))
+											])),
 										A2(
 										$elm$html$Html$td,
 										_List_Nil,
-										A2($elm$core$List$map, $author$project$Main$itemToTD, model.change.items))
+										_List_fromArray(
+											[
+												A2(
+												$elm$html$Html$ul,
+												_List_fromArray(
+													[
+														A2($elm$html$Html$Attributes$style, 'list-style-type', 'none')
+													]),
+												A2($elm$core$List$map, $author$project$Main$itemToTD, model.change.items))
+											]))
 									]))
 							])),
 						A2(
@@ -5525,7 +5553,10 @@ var $author$project$Main$view = function (model) {
 									[
 										A2(
 										$elm$html$Html$td,
-										_List_Nil,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$align('center')
+											]),
 										_List_fromArray(
 											[
 												A2(
@@ -5548,7 +5579,10 @@ var $author$project$Main$view = function (model) {
 											])),
 										A2(
 										$elm$html$Html$td,
-										_List_Nil,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$align('center')
+											]),
 										_List_fromArray(
 											[
 												A2(
@@ -5571,7 +5605,10 @@ var $author$project$Main$view = function (model) {
 											])),
 										A2(
 										$elm$html$Html$td,
-										_List_Nil,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$align('center')
+											]),
 										_List_fromArray(
 											[
 												A2(
@@ -5598,7 +5635,7 @@ var $author$project$Main$view = function (model) {
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
-	{init: $author$project$Main$init, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
+	{init: $author$project$Main$init_ids, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));
 

@@ -2,7 +2,7 @@ module Main exposing (main, subscriptions)
 
 import Browser
 import Html exposing (..)
-import Html.Attributes exposing (checked, disabled, type_)
+import Html.Attributes exposing (align, checked, disabled, style, type_)
 import Html.Events exposing (..)
 import Models exposing (..)
 
@@ -18,18 +18,17 @@ type Msg
 
 mytabs : Tabs
 mytabs =
-    init_ids
-        { csharp = csharp
-        , oracle = oracle
-        , change = change
-        , uid = 0
-        }
+    { csharp = csharp
+    , oracle = oracle
+    , change = change
+    , uid = 0
+    }
 
 
 main : Program () Tabs Msg
 main =
     Browser.element
-        { init = init
+        { init = init_ids
         , update = update
         , subscriptions = subscriptions
         , view = view
@@ -38,20 +37,18 @@ main =
 
 
 --  init
+--init : () -> ( Tabs, Cmd Msg )
+--init _ =
+--    ( mytabs
+--  , Cmd.none
+--  )
 
 
-init : () -> ( Tabs, Cmd Msg )
-init _ =
-    ( mytabs
-    , Cmd.none
-    )
-
-
-init2 : Int -> List ChecklistItem -> List ChecklistItem
-init2 start list =
+init_enum : Int -> List ChecklistItem -> List ChecklistItem
+init_enum start list =
     case ( List.head list, List.tail list ) of
         ( Just hd, Just tlist ) ->
-            { hd | id = start } :: init2 (start + 1) tlist
+            { hd | id = start } :: init_enum (start + 1) tlist
 
         ( Just hd, _ ) ->
             [ { hd | id = start } ]
@@ -60,20 +57,34 @@ init2 start list =
             list
 
 
-init_ids : Tabs -> Tabs
-init_ids model =
+init_ids : () -> ( Tabs, Cmd Msg )
+init_ids _ =
     let
         cs =
-            List.length model.csharp.items
+            List.length mytabs.csharp.items
 
         orc =
-            List.length model.oracle.items
+            List.length mytabs.oracle.items
     in
-    { model
-        | csharp = { csharp | items = init2 0 csharp.items }
-        , oracle = { oracle | items = init2 cs oracle.items }
-        , change = { change | items = init2 (cs + orc) change.items }
-    }
+    ( { csharp =
+            { display = "Hello"
+            , context = Csharp
+            , items = init_enum 0 csharp.items
+            }
+      , oracle =
+            { display = "Oracle"
+            , context = Oracle
+            , items = init_enum cs oracle.items
+            }
+      , change =
+            { display = "Change"
+            , context = Change
+            , items = init_enum (cs + orc) change.items
+            }
+      , uid = 1
+      }
+    , Cmd.none
+    )
 
 
 
@@ -94,9 +105,9 @@ update msg model =
                         t
             in
             ( { model
-                | csharp = { csharp | items = List.map updateEntry csharp.items }
-                , oracle = { oracle | items = List.map updateEntry oracle.items }
-                , change = { change | items = List.map updateEntry change.items }
+                | csharp = { csharp | items = List.map updateEntry model.csharp.items }
+                , oracle = { oracle | items = List.map updateEntry model.oracle.items }
+                , change = { change | items = List.map updateEntry model.change.items }
               }
             , Cmd.none
             )
@@ -125,7 +136,7 @@ itemsAllChecked checkList =
 
 itemToTD : ChecklistItem -> Html Msg
 itemToTD checkListItem =
-    ul []
+    li []
         [ input [ type_ "checkbox", checked checkListItem.checked, onClick (CheckBox checkListItem.id (not checkListItem.checked)) ] []
         , span [] [ text (String.concat [ checkListItem.text, String.fromInt checkListItem.id ]) ]
         ]
@@ -145,27 +156,34 @@ view model =
                 []
                 [ tr []
                     [ td []
-                        (List.map
-                            itemToTD
-                            model.csharp.items
-                        )
+                        [ ul [ style "list-style-type" "none" ]
+                            (List.map
+                                itemToTD
+                                model.csharp.items
+                            )
+                        ]
                     , td []
-                        (List.map
-                            itemToTD
-                            model.oracle.items
-                        )
+                        [ ul
+                            [ style "list-style-type" "none" ]
+                            (List.map
+                                itemToTD
+                                model.oracle.items
+                            )
+                        ]
                     , td []
-                        (List.map
-                            itemToTD
-                            model.change.items
-                        )
+                        [ ul [ style "list-style-type" "none" ]
+                            (List.map
+                                itemToTD
+                                model.change.items
+                            )
+                        ]
                     ]
                 ]
             , tfoot []
                 [ tr []
-                    [ td [] [ input [ type_ "checkbox", disabled True, checked (itemsAllChecked model.csharp.items) ] [], span [] [ text "Alles" ] ]
-                    , td [] [ input [ type_ "checkbox", disabled True, checked (itemsAllChecked model.oracle.items) ] [], span [] [ text "Alles" ] ]
-                    , td [] [ input [ type_ "checkbox", disabled True, checked (itemsAllChecked model.change.items) ] [], span [] [ text "Alles" ] ]
+                    [ td [ align "center" ] [ input [ type_ "checkbox", disabled True, checked (itemsAllChecked model.csharp.items) ] [], span [] [ text "Alles" ] ]
+                    , td [ align "center" ] [ input [ type_ "checkbox", disabled True, checked (itemsAllChecked model.oracle.items) ] [], span [] [ text "Alles" ] ]
+                    , td [ align "center" ] [ input [ type_ "checkbox", disabled True, checked (itemsAllChecked model.change.items) ] [], span [] [ text "Alles" ] ]
                     ]
                 ]
             ]
