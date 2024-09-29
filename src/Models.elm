@@ -51,6 +51,10 @@ oracle =
           , id = 4
           , checked = True
           }
+        , { text = "third"
+          , id = 12
+          , checked = False
+          }
         ]
     }
 

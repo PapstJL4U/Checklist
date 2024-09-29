@@ -66,22 +66,10 @@ init_ids _ =
         orc =
             List.length mytabs.oracle.items
     in
-    ( { csharp =
-            { display = "Hello"
-            , context = Csharp
-            , items = init_enum 0 csharp.items
-            }
-      , oracle =
-            { display = "Oracle"
-            , context = Oracle
-            , items = init_enum cs oracle.items
-            }
-      , change =
-            { display = "Change"
-            , context = Change
-            , items = init_enum (cs + orc) change.items
-            }
-      , uid = 1
+    ( { mytabs
+        | csharp = { csharp | items = init_enum 0 csharp.items }
+        , oracle = { oracle | items = init_enum cs oracle.items }
+        , change = { change | items = init_enum (cs + orc) change.items }
       }
     , Cmd.none
     )
