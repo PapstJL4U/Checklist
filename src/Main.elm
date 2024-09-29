@@ -36,12 +36,7 @@ main =
 
 
 
---  init
---init : () -> ( Tabs, Cmd Msg )
---init _ =
---    ( mytabs
---  , Cmd.none
---  )
+-- init
 
 
 init_enum : Int -> List ChecklistItem -> List ChecklistItem
@@ -126,52 +121,60 @@ itemToTD : ChecklistItem -> Html Msg
 itemToTD checkListItem =
     li []
         [ input [ type_ "checkbox", checked checkListItem.checked, onClick (CheckBox checkListItem.id (not checkListItem.checked)) ] []
-        , span [] [ text (String.concat [ checkListItem.text, String.fromInt checkListItem.id ]) ]
+        , span [ onMouseDown (CheckBox checkListItem.id (not checkListItem.checked)) ] [ text (String.concat [ checkListItem.text, "" ]) ]
         ]
 
 
 view : Tabs -> Html Msg
 view model =
-    div []
-        [ table []
-            [ thead
-                []
-                [ th [] [ text model.csharp.display ]
-                , th [] [ text model.oracle.display ]
-                , th [] [ text model.change.display ]
-                ]
-            , tbody
-                []
-                [ tr []
-                    [ td []
-                        [ ul [ style "list-style-type" "none" ]
-                            (List.map
-                                itemToTD
-                                model.csharp.items
-                            )
-                        ]
-                    , td []
-                        [ ul
-                            [ style "list-style-type" "none" ]
-                            (List.map
-                                itemToTD
-                                model.oracle.items
-                            )
-                        ]
-                    , td []
-                        [ ul [ style "list-style-type" "none" ]
-                            (List.map
-                                itemToTD
-                                model.change.items
-                            )
+    div
+        [ style "margin" "auto"
+        , style "width" "fit-content"
+        ]
+        [ h2 [] [ text "Checklist" ]
+        , div
+            [ style "border" "3px solid black"
+            ]
+            [ table []
+                [ thead
+                    []
+                    [ th [] [ text model.csharp.display ]
+                    , th [] [ text model.oracle.display ]
+                    , th [] [ text model.change.display ]
+                    ]
+                , tbody
+                    []
+                    [ tr []
+                        [ td []
+                            [ ul [ style "list-style-type" "none" ]
+                                (List.map
+                                    itemToTD
+                                    model.csharp.items
+                                )
+                            ]
+                        , td []
+                            [ ul
+                                [ style "list-style-type" "none" ]
+                                (List.map
+                                    itemToTD
+                                    model.oracle.items
+                                )
+                            ]
+                        , td []
+                            [ ul [ style "list-style-type" "none" ]
+                                (List.map
+                                    itemToTD
+                                    model.change.items
+                                )
+                            ]
                         ]
                     ]
-                ]
-            , tfoot []
-                [ tr []
-                    [ td [ align "center" ] [ input [ type_ "checkbox", disabled True, checked (itemsAllChecked model.csharp.items) ] [], span [] [ text "Alles" ] ]
-                    , td [ align "center" ] [ input [ type_ "checkbox", disabled True, checked (itemsAllChecked model.oracle.items) ] [], span [] [ text "Alles" ] ]
-                    , td [ align "center" ] [ input [ type_ "checkbox", disabled True, checked (itemsAllChecked model.change.items) ] [], span [] [ text "Alles" ] ]
+                , tfoot []
+                    [ tr []
+                        [ td [ align "center" ] [ input [ type_ "checkbox", disabled True, checked (itemsAllChecked model.csharp.items) ] [], span [] [ text "Alles" ] ]
+                        , td [ align "center" ] [ input [ type_ "checkbox", disabled True, checked (itemsAllChecked model.oracle.items) ] [], span [] [ text "Alles" ] ]
+                        , td [ align "center" ] [ input [ type_ "checkbox", disabled True, checked (itemsAllChecked model.change.items) ] [], span [] [ text "Alles" ] ]
+                        ]
                     ]
                 ]
             ]

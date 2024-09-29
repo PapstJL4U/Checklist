@@ -21,61 +21,6 @@ type alias Checklist =
     }
 
 
-csharp : Checklist
-csharp =
-    { display = "C#"
-    , context = Csharp
-    , items =
-        [ { text = "first"
-          , id = -1
-          , checked = False
-          }
-        , { text = "second"
-          , id = -2
-          , checked = True
-          }
-        ]
-    }
-
-
-oracle : Checklist
-oracle =
-    { display = "Oracle"
-    , context = Oracle
-    , items =
-        [ { text = "first"
-          , id = 3
-          , checked = True
-          }
-        , { text = "second"
-          , id = 4
-          , checked = True
-          }
-        , { text = "third"
-          , id = 12
-          , checked = False
-          }
-        ]
-    }
-
-
-change : Checklist
-change =
-    { display = "Change-Script"
-    , context = Change
-    , items =
-        [ { text = "first"
-          , id = 5
-          , checked = False
-          }
-        , { text = "second"
-          , id = 6
-          , checked = True
-          }
-        ]
-    }
-
-
 type alias Tabs =
     { csharp : Checklist
     , oracle : Checklist
@@ -84,5 +29,74 @@ type alias Tabs =
     }
 
 
+transform_list : List String -> List ChecklistItem
+transform_list list =
+    case ( List.head list, List.tail list ) of
+        ( Just hd, Just tail ) ->
+            { text = hd
+            , id = -1
+            , checked = False
+            }
+                :: transform_list tail
 
--- tabs : { csharp : Checklist, oracle : Checklist, change : Checklist }
+        ( Just hd, _ ) ->
+            [ { text = hd
+              , id = -1
+              , checked = False
+              }
+            ]
+
+        ( _, _ ) ->
+            []
+
+
+csharp : Checklist
+csharp =
+    { display = "C#"
+    , context = Csharp
+    , items =
+        transform_list do_csharp
+    }
+
+
+oracle : Checklist
+oracle =
+    { display = "Oracle"
+    , context = Oracle
+    , items =
+        transform_list do_oracle
+    }
+
+
+change : Checklist
+change =
+    { display = "Change-Scripts"
+    , context = Change
+    , items =
+        transform_list do_change
+    }
+
+
+do_csharp : List String
+do_csharp =
+    [ "Merged Production"
+    , ".csproj kontrolliert"
+    , "Abhängige Tickets notiert"
+    ]
+
+
+do_oracle : List String
+do_oracle =
+    [ "Reference mit Select gesucht"
+    , "Codesuit Änderungen"
+    , "Types"
+    , "Collections"
+    , "Kommentare"
+    ]
+
+
+do_change : List String
+do_change =
+    [ "ANSI Codierung"
+    , "Line Ending"
+    ]
